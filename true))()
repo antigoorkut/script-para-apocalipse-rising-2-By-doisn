@@ -1,0 +1,149 @@
+-- Criação da UI Library
+local uiLibrary = {}
+
+-- Função para criar uma nova janela
+function uiLibrary:CreateWindow(title)
+    local window = Instance.new("ScreenGui")
+    local frame = Instance.new("Frame")
+    local titleLabel = Instance.new("TextLabel")
+    local closeButton = Instance.new("TextButton")
+    local minimizeButton = Instance.new("TextButton")
+
+    window.Name = title
+    window.Parent = game.CoreGui
+
+    frame.Name = "MainFrame"
+    frame.Parent = window
+    frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Cor de fundo do frame
+    frame.BorderSizePixel = 2 -- Tamanho da borda
+    frame.BorderColor3 = Color3.new(1, 1, 1) -- Cor da borda
+    frame.Size = UDim2.new(0, 300, 0, 400)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -200)
+
+    titleLabel.Name = "TitleLabel"
+    titleLabel.Parent = frame
+    titleLabel.Text = title
+    titleLabel.Size = UDim2.new(1, 0, 0, 50)
+    titleLabel.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Cor de fundo do título
+    titleLabel.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do título
+    titleLabel.Font = Enum.Font.SourceSansBold -- Fonte do título
+    titleLabel.TextSize = 24 -- Tamanho do texto do título
+
+    closeButton.Name = "CloseButton"
+    closeButton.Parent = frame
+    closeButton.Text = "X"
+    closeButton.Size = UDim2.new(0, 50, 0, 50)
+    closeButton.Position = UDim2.new(1, -50, 0, 0)
+    closeButton.BackgroundColor3 = Color3.new(0.8, 0.1, 0.1) -- Cor de fundo do botão de fechar
+    closeButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão de fechar
+    closeButton.Font = Enum.Font.SourceSansBold -- Fonte do botão de fechar
+    closeButton.TextSize = 24 -- Tamanho do texto do botão de fechar
+    closeButton.MouseButton1Click:Connect(function()
+        window.Enabled = false
+    end)
+
+    minimizeButton.Name = "MinimizeButton"
+    minimizeButton.Parent = frame
+    minimizeButton.Text = "_"
+    minimizeButton.Size = UDim2.new(0, 50, 0, 50)
+    minimizeButton.Position = UDim2.new(1, -100, 0, 0)
+    minimizeButton.BackgroundColor3 = Color3.new(0.1, 0.1, 0.8) -- Cor de fundo do botão de minimizar
+    minimizeButton.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto do botão de minimizar
+    minimizeButton.Font = Enum.Font.SourceSansBold -- Fonte do botão de minimizar
+    minimizeButton.TextSize = 24 -- Tamanho do texto do botão de minimizar
+    minimizeButton.MouseButton1Click:Connect(function()
+        frame.Visible = not frame.Visible
+    end)
+
+    return frame
+end
+
+-- Função para criar uma caixa de seleção
+function uiLibrary:CreateCheckbox(parent, text, callback)
+    local checkbox = Instance.new("TextButton")
+    checkbox.Parent = parent
+    checkbox.Text = text
+    checkbox.Size = UDim2.new(0, 200, 0, 50)
+    checkbox.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3) -- Cor de fundo da caixa de seleção
+    checkbox.TextColor3 = Color3.new(1, 1, 1) -- Cor do texto da caixa de seleção
+    checkbox.Font = Enum.Font.SourceSans -- Fonte da caixa de seleção
+    checkbox.TextSize = 20 -- Tamanho do texto da caixa de seleção
+
+    local isChecked = false
+    checkbox.MouseButton1Click:Connect(function()
+        isChecked = not isChecked
+        callback(isChecked)
+        checkbox.Text = text .. (isChecked and " [ON]" or " [OFF]")
+    end)
+end
+
+-- Exemplo de uso da UI Library
+local mainFrame = uiLibrary:CreateWindow("Etc")
+
+uiLibrary:CreateCheckbox(mainFrame, "ESP", function(state)
+    print("ESP: " .. (state and "Ativado" or "Desativado"))
+end)
+
+uiLibrary:CreateCheckbox(mainFrame, "Aimbot", function(state)
+    print("Aimbot: " .. (state and "Ativado" or "Desativado"))
+end)
+
+
+
+-- Variáveis para armazenar o estado do ESP e Aimbot
+local espAtivo = false
+local aimbotAtivo = false
+
+-- Função para alternar o ESP
+local function alternarESP()
+    espAtivo = not espAtivo
+    if espAtivo then
+        -- Código para ativar ESP
+        print("ESP Ativado")
+    else
+        -- Código para desativar ESP
+        print("ESP Desativado")
+    end
+end
+
+-- Função para alternar o Aimbot
+local function alternarAimbot()
+    aimbotAtivo = not aimbotAtivo
+    if aimbotAtivo then
+        -- Código para ativar Aimbot
+        print("Aimbot Ativado")
+    else
+        -- Código para desativar Aimbot
+        print("Aimbot Desativado")
+    end
+end
+
+-- Função para identificar inimigos e aliados
+local function identificarJogadores()
+    for _, jogador in pairs(game.Players:GetPlayers()) do
+        if jogador.Team == game.Players.LocalPlayer.Team then
+            -- Código para marcar aliados em azul
+        else
+            -- Código para marcar inimigos em vermelho
+        end
+    end
+end
+
+-- Conectar as funções às teclas
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        alternarESP()
+    elseif input.KeyCode == Enum.KeyCode.LeftShift then
+        alternarAimbot()
+    end
+end)
+
+-- Loop principal para atualizar o ESP e Aimbot
+game:GetService("RunService").RenderStepped:Connect(function()
+    if espAtivo then
+        identificarJogadores()
+    end
+    if aimbotAtivo then
+        -- Código para grudar a mira no jogador
+    end
+end)
